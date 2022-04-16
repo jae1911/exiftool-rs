@@ -1,5 +1,8 @@
 use rexiv2::Metadata;
 use std::ffi::OsStr;
+use walkdir::WalkDir;
+use std::fs;
+use std::io;
 
 mod utils;
 
@@ -83,4 +86,36 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
         }
     }
     
+}
+
+pub fn convert_whole_dir(base_path: &std::path::Path, keep_filename: bool, verbose: bool, recursive: bool) -> io::Result<()> {
+    if !recursive {
+        // Only top level dir
+        for entry in fs::read_dir(base_path)? {
+            {
+                let entry = entry?;
+                let path = entry.path();
+                if path.is_file() {
+                    scrub_image_file(path.as_path(), keep_filename, verbose)
+                }
+            }
+        }
+
+        Ok(())
+    } else {
+        // Recursive scrubbing
+        let mut total = 0;
+        for entry in WalkDir::new(base_path)
+            .follow_links(true)
+            .into_iter()
+            .filter_map(|e| e.ok()) {
+                {
+                    total += 1;
+                    let image_path = entry.path();
+                    scrub_image_file(image_path, keep_filename, verbose);
+                }
+            }
+            println!("Scrubbed {} images in total.", total);
+            Ok(())
+    }
 }
