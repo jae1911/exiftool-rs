@@ -1,5 +1,4 @@
 use clap::Parser;
-use walkdir::WalkDir;
 
 mod scrubber;
 
@@ -27,6 +26,13 @@ struct Cli {
         long
     )]
     verbose: bool,
+    /// Recursive scrubbing
+    #[clap(
+        help_heading = Some("SWITCHES"),
+        short,
+        long
+    )]
+    recursive: bool,
     /// The image you want to apply the changes to
     #[clap(
         help_heading = Some("FILE"),
@@ -43,6 +49,7 @@ fn main() {
     let keep_filename = args.inplace;
     let scrub_directory = args.directory;
     let verbose = args.verbose;
+    let recursive = args.recursive;
 
     if image_path.exists() && image_path.is_file() {
         println!("> Scrubbing a single file\n");
@@ -52,18 +59,8 @@ fn main() {
         // Scrub whole dir
         if scrub_directory {
             println!("> Alright, attempting to scrub the directory!\n");
-            let mut total = 0;
-            for entry in WalkDir::new(image_path)
-                .follow_links(true)
-                .into_iter()
-                .filter_map(|e| e.ok()) {
-                    {
-                        total = total + 1;
-                        let image_path = entry.path();
-                        scrubber::scrub_image_file(image_path, keep_filename, verbose);
-                    }
-                }
-            println!("Scrubbed a total of {} files", total);
+            
+            scrubber::convert_whole_dir(image_path, keep_filename, verbose, recursive);
         } else {
             println!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch");
         }
