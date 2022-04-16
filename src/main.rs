@@ -52,12 +52,12 @@ fn main() {
         // Scrub whole dir
         if scrub_directory {
             println!("> Alright, attempting to scrub the directory!\n");
-            let total = WalkDir::new(image_path).into_iter().count();
-            for entry in WalkDir::new(image_path)
-                .follow_links(true)
+            let mut total = 0;
+            for entry in WalkDir::new(image_path).follow_links(true).into_iter()
                 .into_iter()
                 .filter_map(|e| e.ok()) {
                     {
+                        total = total + 1;
                         let image_path = entry.path();
                         scrubber::scrub_image_file(image_path, keep_filename, verbose);
                     }
