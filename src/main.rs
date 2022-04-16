@@ -25,7 +25,7 @@ fn main() {
 
     // Check if the file exists
     let image_path = &args.path;
-    let keep_filename = &args.inplace;
+    let keep_filename = args.inplace;
 
     if image_path.exists() {
         scrubber::scrub_image_file(image_path, keep_filename);

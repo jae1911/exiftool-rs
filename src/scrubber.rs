@@ -3,12 +3,14 @@ use std::ffi::OsStr;
 
 mod utils;
 
-pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: &bool) {
+pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) {
     println!("> Found a path {}, processing!\n", image_path.display());
 
     println!("\n> Attempting to clean...\n");
 
-    let meta = Metadata::new_from_path(image_path).unwrap();
+    let meta = Metadata::new_from_path(image_path).unwrap_or_else(|_error| {
+                panic!("There was a problem when scrubbing the image, maybe it was already scrubbed?");
+            });
 
     // EXIF
     if meta.supports_exif() {
@@ -38,7 +40,7 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: &bool) {
     }
 
     // Generate new path for image
-    if *keep_filename {
+    if !keep_filename {
         let filename_stem = image_path.file_stem().unwrap_or(OsStr::new(""));
         let mut new_filename = filename_stem.to_os_string();
         new_filename.push("-scrubbed");
