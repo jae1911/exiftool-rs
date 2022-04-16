@@ -5,10 +5,13 @@ use clap::Parser;
 use std::path::Path;
 
 #[derive(Parser, Debug)]
-#[clap(author, version, about)]
+#[clap(author = "Jae Lo Presti", version, about = "A small tool to scrub metadata from images.")]
 struct Cli {
     /// The image you want to apply the changes to
-    #[clap(parse(from_os_str))]
+    #[clap(
+        help_heading = Some("FILE"),
+        parse(from_os_str)
+    )]
     path: std::path::PathBuf,
 }
 
