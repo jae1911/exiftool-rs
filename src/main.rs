@@ -53,7 +53,8 @@ fn main() {
         if scrub_directory {
             println!("> Alright, attempting to scrub the directory!\n");
             let mut total = 0;
-            for entry in WalkDir::new(image_path).follow_links(true).into_iter()
+            for entry in WalkDir::new(image_path)
+                .follow_links(true)
                 .into_iter()
                 .filter_map(|e| e.ok()) {
                     {
