@@ -42,6 +42,42 @@ The program will be then be available in `target/release/exiftool-rs`
 Some benchmarks because everybody loves them.  
 Everything was tested on a Ryzen 7 3700x with 32GB of ram.
 
+`exiftool` (Perl version)
+```
+$ sudo chrt -f 99 perf stat -ddd exiftool -v3 -overwrite_original -all='' base.jpg 2>&1 > /dev/null 
+
+ Performance counter stats for 'exiftool -v3 -overwrite_original -all= base.jpg':
+
+            108.19 msec task-clock                #    0.996 CPUs utilized          
+                 0      context-switches          #    0.000 /sec                   
+                 0      cpu-migrations            #    0.000 /sec                   
+             5,963      page-faults               #   55.115 K/sec                  
+       444,730,491      cycles                    #    4.111 GHz                      (28.92%)
+        18,008,995      stalled-cycles-frontend   #    4.05% frontend cycles idle     (31.69%)
+        43,509,390      stalled-cycles-backend    #    9.78% backend cycles idle      (34.47%)
+       604,892,502      instructions              #    1.36  insn per cycle         
+                                                  #    0.07  stalled cycles per insn  (37.24%)
+       133,585,903      branches                  #    1.235 G/sec                    (40.01%)
+         3,552,814      branch-misses             #    2.66% of all branches          (41.59%)
+       285,062,290      L1-dcache-loads           #    2.635 G/sec                    (40.58%)
+        12,138,954      L1-dcache-load-misses     #    4.26% of all L1-dcache accesses  (37.81%)
+   <not supported>      LLC-loads                                                   
+   <not supported>      LLC-load-misses                                             
+       137,952,992      L1-icache-loads           #    1.275 G/sec                    (35.03%)
+         2,939,284      L1-icache-load-misses     #    2.13% of all L1-icache accesses  (32.26%)
+         2,013,636      dTLB-loads                #   18.612 M/sec                    (29.49%)
+           144,403      dTLB-load-misses          #    7.17% of all dTLB cache accesses  (27.73%)
+           643,638      iTLB-loads                #    5.949 M/sec                    (27.73%)
+             9,805      iTLB-load-misses          #    1.52% of all iTLB cache accesses  (27.73%)
+        13,447,839      L1-dcache-prefetches      #  124.295 M/sec                    (27.73%)
+   <not supported>      L1-dcache-prefetch-misses                                   
+
+       0.108629192 seconds time elapsed
+
+       0.098442000 seconds user
+       0.010183000 seconds sys
+```
+
 `mat2`  
 ```
 $ sudo chrt -f 99 perf stat -ddd mat2 --inplace -V base.jpg
@@ -137,5 +173,5 @@ Some events weren't counted. Try disabling the NMI watchdog:
     echo 1 > /proc/sys/kernel/nmi_watchdog
 ```
 
-As you can see, `exiftool-rs` is faster than `mat2` according to this very professional benchmark.  
+As you can see, `exiftool-rs` is faster than `mat2` and `exiftool` (Perl) according to this very professional benchmark.  
 Sample EXIF file was taken from [ianare/exif-samples](https://github.com/ianare/exif-samples/blob/master/jpg/gps/DSCN0010.jpg).
