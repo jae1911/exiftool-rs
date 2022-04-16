@@ -3,6 +3,10 @@
 Simple image metadata scrubber.
 Will remove EXIF, XMP and IPTC metadata.
 
+## Packages
+
+ - [Arch User Repository](https://aur.archlinux.org/packages/exiftool-rs-git)
+
 ## Usage
 
 ```
