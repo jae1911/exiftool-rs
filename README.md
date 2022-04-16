@@ -23,6 +23,7 @@ OPTIONS:
 SWITCHES:
     -d, --directory    Scrub a whole directory (activator)
     -i, --inplace      Do not change the image name
+    -r, --recursive    Recursive scrubbing
     -v, --verbose      Verbose output
 
 FILE:
