@@ -62,7 +62,7 @@ fn main() {
             
             scrubber::convert_whole_dir(image_path, keep_filename, verbose, recursive);
         } else {
-            println!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch");
+            println!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch\n> You can also use -r (--recursive) so it scours all the subfolders as well (in combination with the directory switch)");
         }
     } else {
         println!("> Warning, no file found");
