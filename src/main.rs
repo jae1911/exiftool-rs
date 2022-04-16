@@ -1,8 +1,7 @@
 use std::ffi::OsStr;
-use std::path::PathBuf;
 use clap::Parser;
 
-use std::path::Path;
+mod utils;
 
 #[derive(Parser, Debug)]
 #[clap(author = "Jae Lo Presti", version, about = "A small tool to scrub metadata from images.")]
@@ -59,7 +58,7 @@ fn main() {
             let mut new_filename = filename_stem.to_os_string();
             new_filename.push("-scrubbed");
 
-            let new_path = change_file_name(&args.path, new_filename.to_str().unwrap());
+            let new_path = utils::change_file_name(&args.path, new_filename.to_str().unwrap());
 
             println!("> Saving modified image to {:?}", new_path);
 
@@ -68,14 +67,4 @@ fn main() {
         }
         Err(error) => { println!("An error occurred: {}", error); }
     }
-}
-
-fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
-    let path = path.as_ref();
-    let mut result = path.to_owned();
-    result.set_file_name(name);
-    if let Some(ext) = path.extension() {
-        result.set_extension(ext);
-    }
-    result
 }
