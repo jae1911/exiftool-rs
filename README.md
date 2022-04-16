@@ -14,11 +14,14 @@ Jae Lo Presti
 A small tool to scrub metadata from images.
 
 USAGE:
-    exiftool-rs <PATH>
+    exiftool-rs [OPTIONS] <PATH>
 
 OPTIONS:
     -h, --help       Print help information
     -V, --version    Print version information
+
+SWITCHES:
+    -i, --inplace    Do not change the image name
 
 FILE:
     <PATH>    The image you want to apply the changes to
