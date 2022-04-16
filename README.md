@@ -21,7 +21,9 @@ OPTIONS:
     -V, --version    Print version information
 
 SWITCHES:
-    -i, --inplace    Do not change the image name
+    -d, --directory    Scrub a whole directory (activator)
+    -i, --inplace      Do not change the image name
+    -v, --verbose      Verbose output
 
 FILE:
     <PATH>    The image you want to apply the changes to
