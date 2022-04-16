@@ -48,6 +48,7 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) {
         _ = std::fs::copy(image_path.as_os_str(), new_path.as_os_str());
         _ = meta.save_to_file(new_path);
     } else {
+        println!("> Saving modified image to {:?}", image_path);
         _ = std::fs::copy(image_path.as_os_str(), image_path.as_os_str());
         _ = meta.save_to_file(image_path);
     }
