@@ -26,7 +26,7 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             }
         } else {
             if verbose {
-                println!("> No EXIF data found (or not supported)\n.");
+                println!("> No EXIF data found (or not supported)\n");
             }
         }
 
