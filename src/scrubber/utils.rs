@@ -12,16 +12,10 @@ pub fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
     result
 }
 
+const FILE_EXTENSIONS_SUPPORTED: &[&str] = &["jpeg", "jpg", "tiff", "wav", "png", "webp"];
 pub fn check_can_be_scrubbed(path: impl AsRef<Path>) -> bool {
-    let path = path.as_ref();
-    let current_extension = path
-        .extension()
-        .and_then(OsStr::to_str);
-
-    let file_extensions_supported = vec!["jpeg", "jpg", "tiff", "wav", "png", "webp"];
-
-    if file_extensions_supported.contains(&current_extension.as_deref().unwrap_or("default string")) {
-        true
+    if let Some(extension) = path.as_ref().extension().and_then(OsStr::to_str) {
+        FILE_EXTENSIONS_SUPPORTED.contains(&extension)
     } else {
         false
     }
