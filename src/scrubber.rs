@@ -23,10 +23,8 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             if verbose {
                 println!("> Cleared all EXIF data!\n");
             }
-        } else {
-            if verbose {
-                println!("> No EXIF data found (or not supported)\n");
-            }
+        } else if verbose {
+            println!("> No EXIF data found (or not supported)\n");
         }
 
         // XMP
@@ -38,10 +36,8 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             if verbose {
                 println!("> Cleared all XMP data!\n");
             }
-        } else {
-            if verbose {
-                println!("> No XMP data found (or not supported)\n");
-            }
+        } else if verbose {
+            println!("> No XMP data found (or not supported)\n");
         }
 
         // IPTC
@@ -53,10 +49,8 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             if verbose {
                 println!("> Cleared all IPTC data!\n");
             }
-        } else {
-            if verbose {
-                println!("> No IPTC data found (or not supported)\n");
-            }
+        } else if verbose {
+            println!("> No IPTC data found (or not supported)\n");
         }
 
         // Generate new path for image
@@ -79,10 +73,8 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             _ = std::fs::copy(image_path.as_os_str(), image_path.as_os_str());
             _ = meta.save_to_file(image_path);
         }
-    } else {
-        if verbose {
-            println!("> Error: could not scrub image (maybe already scrubbed?)");
-        }
+    } else if verbose {
+        println!("> Error: could not scrub image (maybe already scrubbed?)");
     }
 }
 
