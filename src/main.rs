@@ -8,7 +8,7 @@ mod scrubber;
 
 #[derive(Parser, Debug)]
 #[clap(
-    author = "Jae Lo Presti",
+    author = "Jae Lo Presti <me@jae.fi>",
     version,
     about = "A small tool to scrub metadata from images."
 )]
