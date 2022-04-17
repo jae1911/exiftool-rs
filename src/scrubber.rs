@@ -13,7 +13,7 @@ pub fn scrub_image_file(
     image_path: &std::path::Path,
     keep_filename: bool,
 ) -> Result<(), Box<dyn Error>> {
-    if !check_can_be_scrubbed(image_path.to_owned()) {
+    if !check_can_be_scrubbed(image_path) {
         info!("> Image not compatible with scrubbing")
     }
 
