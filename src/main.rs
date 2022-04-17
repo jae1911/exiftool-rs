@@ -1,6 +1,8 @@
 #![warn(clippy::pedantic)]
 
+use env_logger::Env;
 use clap::Parser;
+use log::{info, warn, error};
 
 mod scrubber;
 
@@ -25,13 +27,6 @@ struct Cli {
         long
     )]
     directory: bool,
-    /// Verbose output
-    #[clap(
-        help_heading = Some("SWITCHES"),
-        short,
-        long
-    )]
-    verbose: bool,
     /// Recursive scrubbing
     #[clap(
         help_heading = Some("SWITCHES"),
@@ -54,29 +49,30 @@ fn main() {
     let image_path = &args.path;
     let keep_filename = args.inplace;
     let scrub_directory = args.directory;
-    let verbose = args.verbose;
     let recursive = args.recursive;
 
+    env_logger::init_from_env(Env::default().default_filter_or("warn"));
+
     if image_path.exists() && image_path.is_file() {
-        println!("> Scrubbing a single file\n");
+        info!("> Scrubbing a single file\n");
         // Scrub single image
-        scrubber::scrub_image_file(image_path, keep_filename, verbose);
+        scrubber::scrub_image_file(image_path, keep_filename);
     } else if image_path.exists() && image_path.is_dir() {
         // Scrub whole dir
         if scrub_directory {
-            println!("> Alright, attempting to scrub the directory!\n");
+            info!("> Alright, attempting to scrub the directory!\n");
 
             let scrub_result =
-                scrubber::convert_whole_dir(image_path, keep_filename, verbose, recursive);
+                scrubber::convert_whole_dir(image_path, keep_filename, recursive);
 
             match scrub_result {
-                Ok(_) => println!("> Scrubbing went without any errors"),
-                Err(e) => println!("> An error happened while scrubbing: {}", e),
+                Ok(_) => info!("> Scrubbing went without any errors"),
+                Err(e) => warn!("> An error happened while scrubbing: {}", e),
             }
         } else {
-            println!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch\n> You can also use -r (--recursive) so it scours all the subfolders as well (in combination with the directory switch)");
+            warn!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch\n> You can also use -r (--recursive) so it scours all the subfolders as well (in combination with the directory switch)");
         }
     } else {
-        println!("> Warning, no file found");
+        error!("> Warning, no file found");
     }
 }
