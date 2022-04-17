@@ -4,7 +4,7 @@ use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
 
-use log::{info, warn};
+use log::{info};
 use walkdir::WalkDir;
 
 mod utils;
@@ -20,61 +20,40 @@ pub fn scrub_image_file(
     info!("> Found a path {}, processing!\n", image_path.display());
     info!("\n> Attempting to clean...\n");
 
-    if let Ok(meta) = Metadata::new_from_path(image_path) {
-        // EXIF
-        if meta.supports_exif() {
-            info!("> EXIF data found!\n");
-            meta.clear_exif();
-            info!("> Cleared all EXIF data!\n");
-        }
+    let meta = Metadata::new_from_path(image_path)?;
 
-        // XMP
-        if meta.has_xmp() {
-            info!("> XMP data found!\n");
-            meta.clear_xmp();
-            info!("> Cleared all XMP data!\n");
-        }
-
-        // IPTC
-        if meta.has_iptc() {
-            info!("> IPTC data found!\n");
-            meta.clear_iptc();
-            info!("> Cleared all IPTC data!\n");
-        }
-
-        let new_path = if !keep_filename {
-            let filename_stem = image_path.file_stem().unwrap_or(OsStr::new(""));
-            let mut new_filename = filename_stem.to_os_string();
-            new_filename.push("-scrubbed");
-
-            utils::change_file_name(image_path, new_filename.to_str().unwrap())
-        } else {
-            image_path.to_owned()
-        };
-
-        if !keep_filename {
-            let copy_result = std::fs::copy(image_path, &new_path);
-            match copy_result {
-                Ok(_) => info!("> Copied the file"),
-                Err(e) => warn!("> An error happened: {}", e),
-            }
-        }
-
-        let saving_result = meta.save_to_file(new_path);
-        match saving_result {
-            Ok(_) => {
-                info!("> Scrubbed image saved successfully");
-                Ok(())
-            },
-            Err(e) => {
-                warn!("> Scrubbed image could not be saved: {}", e);
-                Err("Saving image failed".into())
-            },
-        }
-    } else {
-        info!("> Error: could not scrub image (maybe already scrubbed?)");
-        Err("Scrubbing failed (maybe saving or copying failed?)".into())
+    if meta.supports_exif() {
+        info!("> EXIF data found, cleaning");
+        meta.clear_exif();
     }
+
+    if meta.has_xmp() {
+        info!("> XMP data found, cleaning");
+        meta.clear_xmp();
+    }
+
+    if meta.has_iptc() {
+        info!("> IPTC data found, cleaning");
+        meta.clear_iptc();
+    }
+
+    let new_path = if !keep_filename {
+        let filename_stem = image_path.file_stem().unwrap_or(OsStr::new(""));
+        let mut new_filename = filename_stem.to_os_string();
+        new_filename.push("-scrubbed");
+
+        utils::change_file_name(image_path, new_filename.to_str().unwrap())
+    } else {
+        image_path.to_owned()
+    };
+
+    if !keep_filename {
+        std::fs::copy(image_path, &new_path)?;
+    }
+
+    meta.save_to_file(new_path)?;
+
+    Ok(())
 }
 
 pub fn convert_whole_dir(
