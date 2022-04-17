@@ -55,7 +55,7 @@ pub fn scrub_image_file(
             }
         }
 
-        if let Ok(_) = meta.save_to_file(new_path) {
+        if meta.save_to_file(new_path).is_ok() {
             info!("> Scrubbed image saved successfully");
             Ok(())
         } else {
