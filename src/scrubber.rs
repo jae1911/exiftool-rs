@@ -1,14 +1,17 @@
-use std::error::Error;
 use rexiv2::Metadata;
+use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
 
-use walkdir::WalkDir;
 use log::{info, warn};
+use walkdir::WalkDir;
 
 mod utils;
 
-pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) -> Result<(), Box<dyn Error>> {
+pub fn scrub_image_file(
+    image_path: &std::path::Path,
+    keep_filename: bool,
+) -> Result<(), Box<dyn Error>> {
     info!("> Found a path {}, processing!\n", image_path.display());
     info!("\n> Attempting to clean...\n");
 

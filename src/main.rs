@@ -1,8 +1,8 @@
 #![warn(clippy::pedantic)]
 
-use env_logger::Env;
 use clap::Parser;
-use log::{info, warn, error};
+use env_logger::Env;
+use log::{error, info, warn};
 
 mod scrubber;
 
@@ -56,14 +56,18 @@ fn main() {
     if image_path.exists() && image_path.is_file() {
         info!("> Scrubbing a single file\n");
         // Scrub single image
-        let _ = scrubber::scrub_image_file(image_path, keep_filename);
+        let scrub_result = scrubber::scrub_image_file(image_path, keep_filename);
+
+        match scrub_result {
+            Ok(_) => info!("> Scrubbing went without any errors"),
+            Err(e) => warn!("> An error happened while scrubbing: {}", e),
+        }
     } else if image_path.exists() && image_path.is_dir() {
         // Scrub whole dir
         if scrub_directory {
             info!("> Alright, attempting to scrub the directory!\n");
 
-            let scrub_result =
-                scrubber::convert_whole_dir(image_path, keep_filename, recursive);
+            let scrub_result = scrubber::convert_whole_dir(image_path, keep_filename, recursive);
 
             match scrub_result {
                 Ok(_) => info!("> Scrubbing went without any errors"),
