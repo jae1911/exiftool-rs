@@ -56,7 +56,7 @@ fn main() {
     if image_path.exists() && image_path.is_file() {
         info!("> Scrubbing a single file\n");
         // Scrub single image
-        scrubber::scrub_image_file(image_path, keep_filename);
+        let _ = scrubber::scrub_image_file(image_path, keep_filename);
     } else if image_path.exists() && image_path.is_dir() {
         // Scrub whole dir
         if scrub_directory {

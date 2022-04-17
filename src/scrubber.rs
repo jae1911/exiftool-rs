@@ -1,13 +1,14 @@
+use std::error::Error;
 use rexiv2::Metadata;
 use std::ffi::OsStr;
 use std::fs;
-use std::io;
+
 use walkdir::WalkDir;
 use log::{info, warn};
 
 mod utils;
 
-pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) {
+pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) -> Result<(), Box<dyn Error>> {
     info!("> Found a path {}, processing!\n", image_path.display());
     info!("\n> Attempting to clean...\n");
 
@@ -33,24 +34,34 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool) {
             info!("> Cleared all IPTC data!\n");
         }
 
-        // Generate new path for image
-        if !keep_filename {
+        let new_path = if keep_filename {
+            image_path.to_owned()
+        } else {
             let filename_stem = image_path.file_stem().unwrap_or(OsStr::new(""));
             let mut new_filename = filename_stem.to_os_string();
             new_filename.push("-scrubbed");
 
-            let new_path = utils::change_file_name(image_path, new_filename.to_str().unwrap());
-            info!("> Saving modified image to {:?}", new_path);
+            utils::change_file_name(image_path, new_filename.to_str().unwrap())
+        };
 
-            _ = std::fs::copy(image_path.as_os_str(), new_path.as_os_str());
-            _ = meta.save_to_file(new_path);
+        if keep_filename {
+            if let Ok(_) = std::fs::copy(image_path, &new_path) {
+                info!("> Copied the file");
+            } else {
+                warn!("> Could not copy the image to the new path");
+            }
+        }
+
+        if let Ok(_) = meta.save_to_file(new_path) {
+            info!("> Scrubbed image saved successfully");
+            Ok(())
         } else {
-            info!("> Saving modified image to {:?}", image_path);
-            _ = std::fs::copy(image_path.as_os_str(), image_path.as_os_str());
-            _ = meta.save_to_file(image_path);
+            warn!("> Scrubbed image could not be saved");
+            Err("Saving image failed".into())
         }
     } else {
         warn!("> Error: could not scrub image (maybe already scrubbed?)");
+        Err("Scrubbing failed (maybe saving or copying failed?)".into())
     }
 }
 
@@ -58,7 +69,7 @@ pub fn convert_whole_dir(
     base_path: &std::path::Path,
     keep_filename: bool,
     recursive: bool,
-) -> io::Result<()> {
+) -> Result<(), Box<dyn Error>> {
     if !recursive {
         // Only top level dir
         for entry in fs::read_dir(base_path)? {
@@ -66,7 +77,7 @@ pub fn convert_whole_dir(
                 let entry = entry?;
                 let path = entry.path();
                 if path.is_file() {
-                    scrub_image_file(path.as_path(), keep_filename)
+                    let _ = scrub_image_file(path.as_path(), keep_filename);
                 }
             }
         }
@@ -83,7 +94,7 @@ pub fn convert_whole_dir(
             {
                 total += 1;
                 let image_path = entry.path();
-                scrub_image_file(image_path, keep_filename);
+                let _ = scrub_image_file(image_path, keep_filename);
             }
         }
         println!("Scrubbed {} images in total.", total);
