@@ -1,6 +1,6 @@
+use std::ffi::OsStr;
 use std::path::Path;
 use std::path::PathBuf;
-use std::ffi::OsStr;
 
 pub fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
     let path = path.as_ref();
@@ -23,8 +23,8 @@ pub fn check_can_be_scrubbed(path: impl AsRef<Path>) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use crate::scrubber::utils::check_can_be_scrubbed;
     use crate::scrubber::utils::change_file_name;
+    use crate::scrubber::utils::check_can_be_scrubbed;
 
     use std::ffi::OsStr;
     use std::path::Path;

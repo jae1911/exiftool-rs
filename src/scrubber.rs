@@ -4,7 +4,7 @@ use std::error::Error;
 use std::ffi::OsStr;
 use std::fs;
 
-use log::{info};
+use log::info;
 use walkdir::WalkDir;
 
 mod utils;
