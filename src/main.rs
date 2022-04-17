@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use clap::Parser;
 
 mod scrubber;
