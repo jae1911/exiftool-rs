@@ -3,7 +3,11 @@ use clap::Parser;
 mod scrubber;
 
 #[derive(Parser, Debug)]
-#[clap(author = "Jae Lo Presti", version, about = "A small tool to scrub metadata from images.")]
+#[clap(
+    author = "Jae Lo Presti",
+    version,
+    about = "A small tool to scrub metadata from images."
+)]
 struct Cli {
     /// Do not change the image name
     #[clap(
@@ -59,18 +63,18 @@ fn main() {
         // Scrub whole dir
         if scrub_directory {
             println!("> Alright, attempting to scrub the directory!\n");
-            
-            let scrub_result = scrubber::convert_whole_dir(image_path, keep_filename, verbose, recursive);
+
+            let scrub_result =
+                scrubber::convert_whole_dir(image_path, keep_filename, verbose, recursive);
 
             match scrub_result {
                 Ok(_) => println!("> Scrubbing went without any errors"),
                 Err(e) => println!("> An error happened while scrubbing: {}", e),
-            } 
+            }
         } else {
             println!("> You are attempting to scrub a whole directory; to confirm, please run the command with the -d (or --directory) switch\n> You can also use -r (--recursive) so it scours all the subfolders as well (in combination with the directory switch)");
         }
     } else {
         println!("> Warning, no file found");
     }
-
 }

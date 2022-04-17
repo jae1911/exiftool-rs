@@ -14,8 +14,8 @@ pub fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
 #[cfg(test)]
 mod tests {
     use crate::scrubber::utils::change_file_name;
-    use std::path::Path;
     use std::ffi::OsStr;
+    use std::path::Path;
 
     #[test]
     fn change_file_name_works() {
@@ -24,7 +24,9 @@ mod tests {
         let mut new_filename = filename_stem.to_os_string();
         new_filename.push("-scrubbed");
 
-        assert_eq!(Path::new("test-scrubbed.jpeg"), change_file_name(image_path, new_filename.to_str().unwrap()));
+        assert_eq!(
+            Path::new("test-scrubbed.jpeg"),
+            change_file_name(image_path, new_filename.to_str().unwrap())
+        );
     }
 }
-

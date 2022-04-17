@@ -1,8 +1,8 @@
 use rexiv2::Metadata;
 use std::ffi::OsStr;
-use walkdir::WalkDir;
 use std::fs;
 use std::io;
+use walkdir::WalkDir;
 
 mod utils;
 
@@ -14,7 +14,6 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
     }
 
     if let Ok(meta) = Metadata::new_from_path(image_path) {
-
         // EXIF
         if meta.supports_exif() {
             if verbose {
@@ -85,10 +84,14 @@ pub fn scrub_image_file(image_path: &std::path::Path, keep_filename: bool, verbo
             println!("> Error: could not scrub image (maybe already scrubbed?)");
         }
     }
-    
 }
 
-pub fn convert_whole_dir(base_path: &std::path::Path, keep_filename: bool, verbose: bool, recursive: bool) -> io::Result<()> {
+pub fn convert_whole_dir(
+    base_path: &std::path::Path,
+    keep_filename: bool,
+    verbose: bool,
+    recursive: bool,
+) -> io::Result<()> {
     if !recursive {
         // Only top level dir
         for entry in fs::read_dir(base_path)? {
@@ -108,14 +111,15 @@ pub fn convert_whole_dir(base_path: &std::path::Path, keep_filename: bool, verbo
         for entry in WalkDir::new(base_path)
             .follow_links(true)
             .into_iter()
-            .filter_map(|e| e.ok()) {
-                {
-                    total += 1;
-                    let image_path = entry.path();
-                    scrub_image_file(image_path, keep_filename, verbose);
-                }
+            .filter_map(|e| e.ok())
+        {
+            {
+                total += 1;
+                let image_path = entry.path();
+                scrub_image_file(image_path, keep_filename, verbose);
             }
-            println!("Scrubbed {} images in total.", total);
-            Ok(())
+        }
+        println!("Scrubbed {} images in total.", total);
+        Ok(())
     }
 }
