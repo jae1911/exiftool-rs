@@ -24,11 +24,14 @@ SWITCHES:
     -d, --directory    Scrub a whole directory (activator)
     -i, --inplace      Do not change the image name
     -r, --recursive    Recursive scrubbing
-    -v, --verbose      Verbose output
 
 FILE:
     <PATH>    The image you want to apply the changes to
 ```
+
+## Logging
+
+If you want to modify the logging level, set the `RUST_LOG` environment variable.
 
 ## Compiling
 
