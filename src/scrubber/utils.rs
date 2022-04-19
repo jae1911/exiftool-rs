@@ -45,28 +45,36 @@ mod tests {
     #[test]
     fn image_is_compatible() {
         let image_path = Path::new("test.jpeg");
-        let result = check_can_be_scrubbed(image_path);
-        assert_eq!(true, result);
+        assert_eq!(true, check_can_be_scrubbed(image_path));
     }
 
     #[test]
     fn image_is_not_compatible() {
         let image_path = Path::new("test.gif");
-        let result = check_can_be_scrubbed(image_path);
-        assert_eq!(false, result);
+        assert_eq!(false, check_can_be_scrubbed(image_path));
     }
 
     #[test]
     fn image_is_compatible_uppercase() {
         let image_path = Path::new("test.JPG");
-        let result = check_can_be_scrubbed(image_path);
-        assert_eq!(true, result);
+        assert_eq!(true, check_can_be_scrubbed(image_path));
     }
 
     #[test]
     fn image_is_not_compatible_uppercase() {
         let image_path = Path::new("test.GIF");
-        let result = check_can_be_scrubbed(image_path);
-        assert_eq!(false, result);
+        assert_eq!(false, check_can_be_scrubbed(image_path));
+    }
+
+    #[test]
+    fn image_is_compatible_mixed_case() {
+        let image_path = Path::new("test.JpG");
+        assert_eq!(true, check_can_be_scrubbed(image_path));
+    }
+
+    #[test]
+    fn image_is_not_compatible_mixed_case() {
+        let image_path = Path::new("test.gIf");
+        assert_eq!(false, check_can_be_scrubbed(image_path));
     }
 }
