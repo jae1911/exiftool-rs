@@ -55,4 +55,18 @@ mod tests {
         let result = check_can_be_scrubbed(image_path);
         assert_eq!(false, result);
     }
+
+    #[test]
+    fn image_is_compatible_uppercase() {
+        let image_path = Path::new("test.JPG");
+        let result = check_can_be_scrubbed(image_path);
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn image_is_not_compatible_uppercase() {
+        let image_path = Path::new("test.GIF");
+        let result = check_can_be_scrubbed(image_path);
+        assert_eq!(false, result);
+    }
 }
