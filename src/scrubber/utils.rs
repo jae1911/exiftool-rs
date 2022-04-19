@@ -12,7 +12,7 @@ pub fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
     result
 }
 
-const FILE_EXTENSIONS_SUPPORTED: &[&str] = &["jpeg", "jpg", "tiff", "wav", "png", "webp"];
+const FILE_EXTENSIONS_SUPPORTED: &[&str] = &["jpeg", "jpg", "tiff", "wav", "png", "webp", "mov", "gif", "mp3", "mp4", "pdf"];
 pub fn check_can_be_scrubbed(path: impl AsRef<Path>) -> bool {
     if let Some(extension) = path.as_ref().extension().and_then(OsStr::to_str) {
         FILE_EXTENSIONS_SUPPORTED.contains(&extension.to_lowercase().as_str())
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn image_is_not_compatible() {
-        let image_path = Path::new("test.gif");
+        let image_path = Path::new("test.avif");
         assert_eq!(false, check_can_be_scrubbed(image_path));
     }
 
@@ -62,7 +62,7 @@ mod tests {
 
     #[test]
     fn image_is_not_compatible_uppercase() {
-        let image_path = Path::new("test.GIF");
+        let image_path = Path::new("test.AVIF");
         assert_eq!(false, check_can_be_scrubbed(image_path));
     }
 
@@ -74,7 +74,7 @@ mod tests {
 
     #[test]
     fn image_is_not_compatible_mixed_case() {
-        let image_path = Path::new("test.gIf");
+        let image_path = Path::new("test.aViF");
         assert_eq!(false, check_can_be_scrubbed(image_path));
     }
 }
