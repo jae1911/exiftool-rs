@@ -15,7 +15,7 @@ pub fn change_file_name(path: impl AsRef<Path>, name: &str) -> PathBuf {
 const FILE_EXTENSIONS_SUPPORTED: &[&str] = &["jpeg", "jpg", "tiff", "wav", "png", "webp"];
 pub fn check_can_be_scrubbed(path: impl AsRef<Path>) -> bool {
     if let Some(extension) = path.as_ref().extension().and_then(OsStr::to_str) {
-        FILE_EXTENSIONS_SUPPORTED.contains(&extension)
+        FILE_EXTENSIONS_SUPPORTED.contains(&extension.to_lowercase().as_str())
     } else {
         false
     }
